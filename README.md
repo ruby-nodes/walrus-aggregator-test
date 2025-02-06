@@ -78,7 +78,7 @@ The script will output the progress and results in the terminal, including detai
 Output
 ------
 
-*   **Terminal Output:**The script prints messages with color coding for different types of events:
+* **Terminal Output:** The script prints messages with color coding for different types of events:
     
     *   **Green:** Successful uploads and short download times.
         
@@ -88,7 +88,7 @@ Output
         
     *   **Red:** Errors encountered during uploads/downloads.
         
-*   **JSON Summary (Optional):**If EXPORT\_RESULTS is set to True, a JSON file named stress\_test\_summary.json will be created, containing an array of objects with the following keys:
+* **JSON Summary (Optional):** If EXPORT\_RESULTS is set to True, a JSON file named stress\_test\_summary.json will be created, containing an array of objects with the following keys:
     
     *   blob\_number
         
