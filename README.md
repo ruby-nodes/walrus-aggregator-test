@@ -18,8 +18,8 @@ This Python script performs a stress test on a system by uploading randomly gene
 - **Response Time Measurement:**  
   Measures and displays the response times for both upload and download operations.
 
-- **Graceful HTTP errors handling**
-  All HTTP errors are handled and printer to the terminal output. 
+- **Graceful HTTP errors handling**  
+  All HTTP errors are handled and printed to the terminal output. 
 
 - **Colorful Terminal Output:**  
   Uses the `colorama` library for color-coded terminal messages, making it easier to identify statuses and errors.
