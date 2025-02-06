@@ -126,8 +126,7 @@ def main():
     with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
         future_to_blob = {}
         for i in range(1, BLOBS_NUM + 1):
-            blob_data = generate_random_blob()
-            future = executor.submit(upload_blob, blob_data, i)
+            future = executor.submit(lambda idx=i: upload_blob(generate_random_blob(), idx))
             future_to_blob[future] = i
 
         # Gather upload results
