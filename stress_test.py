@@ -16,9 +16,9 @@ PUBLISHER_URL = "https://walrus-publisher.rubynodes.io"     # Replace with the a
 AGGREGATOR_URL = "https://walrus-aggregator.rubynodes.io"    # Replace with the actual aggregator endpoint 
 
 # Blobs config
-BLOB_MAX_SIZE = 10000   # in kilobytes
-BLOB_MIN_SIZE = 9000   # in kilobytes
-BLOBS_NUM = 5        # number of blobs to generate and upload
+BLOB_MAX_SIZE = 100   # in kilobytes
+BLOB_MIN_SIZE = 90   # in kilobytes
+BLOBS_NUM = 1        # number of blobs to generate and upload
 
 # Settings
 MAX_THREADS = 8       # number of threads to run uploads in parallel
@@ -56,25 +56,13 @@ def generate_random_blob():
     return blob
 
 def upload_blob(blob_data, blob_number):
-    """
-    Uploads blob_data to the publisher endpoint.
-    Measures the upload response time.
-    Returns a tuple (blob_id, upload_time, blob_size_kb).
-    """
     headers = {
         "Content-Type": "application/octet-stream"
     }
+    size_kb = len(blob_data) / 1024.0
     start_time = time.time()
-    size_kb = len(blob_data) / 1024.0 # in kb
     try:
-        response = requests.put(PUBLISHER_URL + "/v1/blobs", data=blob_data)
-        response_time = time.time() - start_time
-    except Exception as e:
-        colored_print(f"[UPLOAD #{blob_number}] Error during upload: {e}, response ", Fore.RED)
-        return None, None
-
-    try:
-        response = requests.post(PUBLISHER_URL, data=blob_data, headers=headers)
+        response = requests.put(PUBLISHER_URL + "/v1/blobs", data=blob_data, headers=headers)
         response_time = time.time() - start_time
         if response.status_code >= 400:
             colored_print(f"[UPLOAD #{blob_number}] HTTP Error {response.status_code}: {response.text}", Fore.RED)
@@ -82,6 +70,12 @@ def upload_blob(blob_data, blob_number):
     except Exception as e:
         colored_print(f"[UPLOAD #{blob_number}] Error during upload: {e}", Fore.RED)
         return None, None, size_kb
+
+    try:
+        response_json = response.json()
+    except Exception as e:
+        colored_print(f"[UPLOAD #{blob_number}] Failed to parse JSON response: {e}", Fore.RED)
+        return None, response_time, size_kb
 
     blob_id = None
     if "newlyCreated" in response_json:
