@@ -1,6 +1,6 @@
-# Stress Test Script
+# Walrus aggregator stress test
 
-This Python script performs a stress test on a system by uploading randomly generated blobs of data to a publisher endpoint and then downloading the blobs from an aggregator endpoint. It measures the response times for both upload and download operations, and prints a summary of the results including details such as upload time, blob size, and download times. The script also optionally exports the summary results to a JSON file.
+This Python script performs a stress test on a [Walrus](https://docs.walrus.site/index.html) aggregator by uploading randomly generated blobs of data to a publisher endpoint and then downloading the blobs from an aggregator endpoint. It measures the response times for both upload and download operations, and prints a summary of the results including details such as upload time, blob size, and download times. The script also optionally exports the summary results to a JSON file.
 
 ## Features
 
