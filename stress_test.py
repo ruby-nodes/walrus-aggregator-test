@@ -18,7 +18,7 @@ AGGREGATOR_URL = "https://walrus-aggregator.rubynodes.io"    # Replace with the 
 # Blobs config
 BLOB_MAX_SIZE = 100   # in kilobytes
 BLOB_MIN_SIZE = 90   # in kilobytes
-BLOBS_NUM = 1        # number of blobs to generate and upload
+BLOBS_NUM = 5        # number of blobs to generate and upload
 
 # Settings
 MAX_THREADS = 8       # number of threads to run uploads in parallel
@@ -112,15 +112,24 @@ def download_blob(blob_id, download_number, attempt):
 
 def main():
     colored_print("Starting stress test...", Fore.WHITE)
-    
-    # Data structure to store results
+
+    # Generate blobs concurrently before upload begins
+    start_gen_time = time.time()
     results = []
-    
+    with ThreadPoolExecutor(max_workers=MAX_THREADS) as gen_executor:
+        gen_futures = [gen_executor.submit(generate_random_blob) for _ in range(BLOBS_NUM)]
+        blobs = [future.result() for future in as_completed(gen_futures)]
+    end_gen_time = time.time()
+    generation_time = end_gen_time - start_gen_time
+    colored_print(f"Blob generation completed in {generation_time:.3f} seconds", Fore.WHITE)
+    colored_print(f"Starting threads...", Fore.WHITE)
+
     # Use ThreadPoolExecutor for concurrent uploads
+
     with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
         future_to_blob = {}
-        for i in range(1, BLOBS_NUM + 1):
-            future = executor.submit(lambda idx=i: upload_blob(generate_random_blob(), idx))
+        for i, blob_data in enumerate(blobs, 1):
+            future = executor.submit(upload_blob, blob_data, i)
             future_to_blob[future] = i
 
         # Gather upload results

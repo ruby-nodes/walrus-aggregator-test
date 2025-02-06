@@ -5,7 +5,7 @@ This Python script performs a stress test on a system by uploading randomly gene
 ## Features
 
 - **Random Blob Generation:**  
-  Generates random blobs with sizes in a specified range (in kilobytes). Blobs can be either binary data or UTF-8 encoded strings.
+  Generates random blobs with sizes in a specified range (in kilobytes). Blobs can be either binary data or UTF-8 encoded strings. Blob generation happens in parallel threads.
 
 - **Parallel Uploads:**  
   Uses a thread pool (configurable via `MAX_THREADS`) to perform uploads concurrently to the publisher endpoint.
@@ -17,6 +17,9 @@ This Python script performs a stress test on a system by uploading randomly gene
 
 - **Response Time Measurement:**  
   Measures and displays the response times for both upload and download operations.
+
+- **Graceful HTTP errors handling**
+  All HTTP errors are handled and printer to the terminal output. 
 
 - **Colorful Terminal Output:**  
   Uses the `colorama` library for color-coded terminal messages, making it easier to identify statuses and errors.
