@@ -16,8 +16,8 @@ PUBLISHER_URL = "https://walrus-publisher.rubynodes.io"     # Replace with the a
 AGGREGATOR_URL = "https://walrus-aggregator.rubynodes.io"    # Replace with the actual aggregator endpoint 
 
 # Blobs config
-BLOB_MAX_SIZE = 1000   # in kilobytes
-BLOB_MIN_SIZE = 900   # in kilobytes
+BLOB_MAX_SIZE = 10000   # in kilobytes
+BLOB_MIN_SIZE = 9000   # in kilobytes
 BLOBS_NUM = 5        # number of blobs to generate and upload
 
 # Settings
@@ -70,14 +70,18 @@ def upload_blob(blob_data, blob_number):
         response = requests.put(PUBLISHER_URL + "/v1/blobs", data=blob_data)
         response_time = time.time() - start_time
     except Exception as e:
-        colored_print(f"[UPLOAD #{blob_number}] Error during upload: {e}", Fore.RED)
+        colored_print(f"[UPLOAD #{blob_number}] Error during upload: {e}, response ", Fore.RED)
         return None, None
 
     try:
-        response_json = response.json()
+        response = requests.post(PUBLISHER_URL, data=blob_data, headers=headers)
+        response_time = time.time() - start_time
+        if response.status_code >= 400:
+            colored_print(f"[UPLOAD #{blob_number}] HTTP Error {response.status_code}: {response.text}", Fore.RED)
+            return None, response_time, size_kb
     except Exception as e:
-        colored_print(f"[UPLOAD #{blob_number}] Failed to parse JSON response: {e}", Fore.RED)
-        return None, response_time
+        colored_print(f"[UPLOAD #{blob_number}] Error during upload: {e}", Fore.RED)
+        return None, None, size_kb
 
     blob_id = None
     if "newlyCreated" in response_json:
